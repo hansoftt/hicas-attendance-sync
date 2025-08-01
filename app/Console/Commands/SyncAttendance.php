@@ -29,7 +29,7 @@ class SyncAttendance extends Command
         $this->info('Syncing attendance data...');
 
         // Example: Fetch data from MsSQL and insert into MySQL
-        $mssqlAttendances = \App\Models\MsSqlAttendance::all();
+        $mssqlAttendances = \App\Models\MsSqlAttendance::query()->orderBy('DeviceLogId')->get();
 
         foreach ($mssqlAttendances as $attendance) {
             // Here you would typically fetch the corresponding record from MsSQL
