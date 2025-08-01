@@ -16,6 +16,6 @@ class MsSqlAttendance extends Model
         parent::__construct($attributes);
 
         // Set the table name dynamically if needed
-        $this->table = sprintf('dbo.DeviceLogs_%s', now()->format('m_Y'));
+        $this->table = sprintf('dbo.DeviceLogs_%s', now()->format('n_Y'));
     }
 }
