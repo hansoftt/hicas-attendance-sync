@@ -40,7 +40,7 @@ class SyncAttendance extends Command
                     'log_id' => $attendance->DeviceLogId,
                     'biometric_id' => $attendance->UserId,
                     'punch_time' => Carbon::parse($attendance->LogDate)->format('Y-m-d H:i:s'),
-                    'device_ip' => $attendance->devce->IpAddress,
+                    'device_ip' => $attendance->device->IpAddress,
                 ];
             });
 
