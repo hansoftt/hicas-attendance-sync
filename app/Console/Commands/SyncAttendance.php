@@ -31,8 +31,11 @@ class SyncAttendance extends Command
 
         // Example: Fetch data from MsSQL and insert into MySQL
         $mssqlAttendances = \App\Models\MsSqlAttendance::query()
-            ->orderBy('DeviceLogId')
-            ->with('device') // Eager load the device relationship
+            ->orderBy('DeviceLogId');
+
+        $mssqlAttendances = $mssqlAttendances
+            ->join('dbo.Devices',  $mssqlAttendances->getTable(), '=', 'dbo.Devices.DeviceId')
+            ->select('dbo.DeviceLogs.*', 'dbo.Devices.IpAddress')
             ->get()
             ->transform(function ($attendance) {
                 // Transform the data if necessary
@@ -40,7 +43,7 @@ class SyncAttendance extends Command
                     'log_id' => $attendance->DeviceLogId,
                     'biometric_id' => $attendance->UserId,
                     'punch_time' => Carbon::parse($attendance->LogDate)->format('Y-m-d H:i:s'),
-                    'device_ip' => $attendance->device->IpAddress,
+                    'device_ip' => $attendance->IpAddress,
                 ];
             });
 
