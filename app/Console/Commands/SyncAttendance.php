@@ -34,7 +34,7 @@ class SyncAttendance extends Command
             ->orderBy('DeviceLogId');
 
         $mssqlAttendances = $mssqlAttendances
-            ->join('dbo.Devices',  $mssqlAttendances->getTable(), '=', 'dbo.Devices.DeviceId')
+            ->join('dbo.Devices',  (new \App\Models\MsSqlAttendance())->getTable(), '=', 'dbo.Devices.DeviceId')
             ->select('dbo.DeviceLogs.*', 'dbo.Devices.IpAddress')
             ->get()
             ->transform(function ($attendance) {
