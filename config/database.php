@@ -48,7 +48,7 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', '104.223.120.105'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'hicas'),
+            'database' => env('DB_DATABASE', 'ecard_hicas_ems'),
             'username' => env('DB_USERNAME', 'hicas'),
             'password' => env('DB_PASSWORD', '123456'),
             'unix_socket' => env('DB_SOCKET', ''),
