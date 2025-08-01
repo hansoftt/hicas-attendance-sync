@@ -30,14 +30,24 @@ class SyncAttendance extends Command
         $this->info('Syncing attendance data...');
 
         // Example: Fetch data from MsSQL and insert into MySQL
-        $mssqlAttendances = \App\Models\MsSqlAttendance::query()->orderBy('DeviceLogId')->get();
+        $mssqlAttendances = \App\Models\MsSqlAttendance::query()
+            ->orderBy('DeviceLogId')
+            ->with('device') // Eager load the device relationship
+            ->get()
+            ->transform(function ($attendance) {
+                // Transform the data if necessary
+                return [
+                    'log_id' => $attendance->DeviceLogId,
+                    'biometric_id' => $attendance->UserId,
+                    'punch_time' => Carbon::parse($attendance->LogDate)->format('Y-m-d H:i:s'),
+                    'device_ip' => $attendance->devce->IpAddress,
+                ];
+            });
 
         foreach ($mssqlAttendances as $attendance) {
-            // Here you would typically fetch the corresponding record from MsSQL
-            // and then insert or update it in MySQL.
-            $this->info("Processing attendance ID: {$attendance->DeviceLogId}");
-            $punchTime = Carbon::parse($attendance->LogDate);
-            $this->info("User: {$attendance->UserId} Logged at: {$punchTime}");
+
+            $this->info("Processing attendance ID: {$attendance['log_id']}");
+            $this->info("Biometric ID: {$attendance['biometric_id']} Logged at: {$attendance['punch_time']} from Device IP: {$attendance['device_ip']}");
         }
     }
 }

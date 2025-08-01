@@ -18,4 +18,9 @@ class MsSqlAttendance extends Model
         // Set the table name dynamically if needed
         $this->table = sprintf('dbo.DeviceLogs_%s', now()->format('n_Y'));
     }
+
+    protected function device()
+    {
+        return $this->hasMany(MsSqlDevice::class, 'DeviceId', 'DeviceId');
+    }
 }
