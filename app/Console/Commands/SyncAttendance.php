@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class SyncAttendance extends Command
@@ -35,6 +36,8 @@ class SyncAttendance extends Command
             // Here you would typically fetch the corresponding record from MsSQL
             // and then insert or update it in MySQL.
             $this->info("Processing attendance ID: {$attendance->DeviceLogId}");
+            $punchTime = Carbon::parse($attendance->LogDate);
+            $this->info("User: {$attendance->UserId} Logged at: {$punchTime}");
         }
     }
 }
