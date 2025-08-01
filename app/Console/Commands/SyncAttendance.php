@@ -33,9 +33,12 @@ class SyncAttendance extends Command
         $mssqlAttendances = \App\Models\MsSqlAttendance::query()
             ->orderBy('DeviceLogId');
 
+        $mssqlAttendancesTable = (new \App\Models\MsSqlAttendance())->getTable();
+        $logDeviceIdColumn = sprintf('%s.DeviceId', $mssqlAttendancesTable);
+
         $mssqlAttendances = $mssqlAttendances
-            ->join('dbo.Devices',  (new \App\Models\MsSqlAttendance())->getTable() . '.DeviceId', '=', 'dbo.Devices.DeviceId')
-            ->select('dbo.DeviceLogs.*', 'dbo.Devices.IpAddress')
+            ->join('dbo.Devices',  $logDeviceIdColumn, '=', 'dbo.Devices.DeviceId')
+            ->select($mssqlAttendancesTable . '.*', 'dbo.Devices.IpAddress')
             ->get()
             ->transform(function ($attendance) {
                 // Transform the data if necessary
