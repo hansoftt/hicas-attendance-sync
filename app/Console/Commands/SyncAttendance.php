@@ -69,16 +69,19 @@ class SyncAttendance extends Command
                 ];
             });
 
-        $mssqlAttendances->map(function ($attendance) {
+        $completedCount = 0;
+        $mssqlAttendances->map(function ($attendance) use (&$completedCount) {
             // Insert into MySQL attendance table
             $exists = MySqlAttendance::query()->where($attendance)->exists();
             if (!$exists) {
                 MySqlAttendance::query()->create($attendance);
-                $this->info('Inserted attendance: ' . json_encode($attendance));
             }
+            $completedCount++;
         });
 
         $lastSynced = $mssqlAttendances->last()->DeviceLogId ?? $this->lastSynced;
         Storage::disk('local')->put('synced_attendance.log', $lastSynced);
+
+        $this->info('Imported attendance: ' . $completedCount);
     }
 }
