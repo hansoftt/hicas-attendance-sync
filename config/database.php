@@ -81,7 +81,7 @@ return [
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '.\SQLEXPRESS'),
+            'host' => env('DB_HOST', '.\\SQLEXPRESS'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'etimetracklite1'),
             'username' => env('DB_USERNAME', 'essl'),
