@@ -60,7 +60,7 @@ class SyncAttendance extends Command
             ->transform(function ($attendance) {
                 // Transform the data if necessary
                 return [
-                    //'log_id' => $attendance->DeviceLogId,
+                    'log_id' => $attendance->DeviceLogId,
                     'date' => Carbon::parse($attendance->LogDate)->format('Y-m-d'),
                     'biometric_id' => $attendance->UserId,
                     'punch_time' => Carbon::parse($attendance->LogDate)->format('Y-m-d H:i:s'),
@@ -70,16 +70,21 @@ class SyncAttendance extends Command
             });
 
         $completedCount = 0;
-        $mssqlAttendances->map(function ($attendance) use (&$completedCount) {
+        $lastSynced = 0;
+
+        $mssqlAttendances->map(function ($attendance) use (&$completedCount, &$lastSynced) {
+            $lastSynced = $attendance['log_id'] ?? null;
+            $attendance = collect($attendance)->except(['log_id'])->toArray();
             // Insert into MySQL attendance table
             $exists = MySqlAttendance::query()->where($attendance)->exists();
             if (!$exists) {
                 MySqlAttendance::query()->create($attendance);
             }
             $completedCount++;
+            $lastSynced = $attendance['log_id'] ?? $lastSynced;
         });
 
-        $lastSynced = $mssqlAttendances->last()->DeviceLogId ?? $this->lastSynced;
+        // Update the last synced ID
         Storage::disk('local')->put('synced_attendance.log', $lastSynced);
 
         $this->info('Imported attendance: ' . $completedCount);
