@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Collection;
 use Illuminate\Support\Facades\Storage;
 
-class SyncAttendance extends Command
+class SyncLocalAttendance extends Command
 {
     protected $lastSynced;
 
